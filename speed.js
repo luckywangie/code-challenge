@@ -1,3 +1,5 @@
+const readline = require('readline');
+
 function speedDetector(speed) {
     const speedLimit = 70;
     const demeritPointThreshold = 12;
@@ -18,4 +20,15 @@ function speedDetector(speed) {
     }
 }
 
+// Create an interface for input and output
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
+// Prompt the user for speed input
+rl.question('Enter your speed: ', (answer) => {
+    const userSpeed = parseInt(answer);
+    speedDetector(userSpeed);
+    rl.close();
+});

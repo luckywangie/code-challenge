@@ -1,32 +1,61 @@
+const readline = require('readline');
+
+// Create an interface to handle user input and output
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+// Function to calculate net salary
 function calculateNetSalary() {
-    // Prompt user for input
-    let basicSalary = parseFloat(prompt("Enter your basic salary (in Ksh):"));
-    let benefits = parseFloat(prompt("Enter your benefits (in Ksh):"));
+    // Prompt user for basic salary and benefits using readline
+    rl.question("Enter your basic salary (in Ksh): ", function(basicSalary) {
+        rl.question("Enter your benefits (in Ksh): ", function(benefits) {
+            // Convert inputs to float
+            basicSalary = parseFloat(basicSalary);
+            benefits = parseFloat(benefits);
 
-    // Calculate gross salary
-    let grossSalary = basicSalary + benefits;
+            // Validate if the inputs are numbers and greater than or equal to zero
+            if (isNaN(basicSalary) || basicSalary < 0) {
+                console.log("Invalid input for basic salary. Please enter a valid number.");
+                rl.close();
+                return;
+            }
+            if (isNaN(benefits) || benefits < 0) {
+                console.log("Invalid input for benefits. Please enter a valid number.");
+                rl.close();
+                return;
+            }
 
-    // Calculate PAYE tax based on tax bands (Assumed bands)
-    let tax = calculateTax(basicSalary);
+            // Calculate gross salary
+            let grossSalary = basicSalary + benefits;
 
-    // Calculate NHIF deductions (Assumed bands)
-    let nhif = calculateNHIF(basicSalary);
+            // Calculate PAYE tax based on tax bands
+            let tax = calculateTax(basicSalary);
 
-    // Calculate NSSF deductions (Assumed as 6% of basic salary)
-    let nssf = basicSalary * 0.06; // NSSF 6% deduction
+            // Calculate NHIF deductions
+            let nhif = calculateNHIF(basicSalary);
 
-    // Calculate net salary
-    let netSalary = grossSalary - (tax + nhif + nssf);
+            // Calculate NSSF deductions (Assumed as 6% of basic salary)
+            let nssf = basicSalary * 0.06;
 
-    // Output results
-    console.log("Gross Salary: Ksh " + grossSalary);
-    console.log("Tax (PAYE): Ksh " + tax);
-    console.log("NHIF Deduction: Ksh " + nhif);
-    console.log("NSSF Deduction: Ksh " + nssf);
-    console.log("Net Salary: Ksh " + netSalary);
+            // Calculate net salary
+            let netSalary = grossSalary - (tax + nhif + nssf);
+
+            // Output results
+            console.log("Gross Salary: Ksh " + grossSalary);
+            console.log("Tax (PAYE): Ksh " + tax);
+            console.log("NHIF Deduction: Ksh " + nhif);
+            console.log("NSSF Deduction: Ksh " + nssf);
+            console.log("Net Salary: Ksh " + netSalary);
+
+            // Close the readline interface after the process is complete
+            rl.close();
+        });
+    });
 }
 
-// Function to calculate PAYE (tax)
+// Function to calculate PAYE tax
 function calculateTax(salary) {
     let tax = 0;
     if (salary <= 24000) {
@@ -64,3 +93,5 @@ function calculateNHIF(salary) {
     return nhif;
 }
 
+// Call the function to start the process
+calculateNetSalary();
